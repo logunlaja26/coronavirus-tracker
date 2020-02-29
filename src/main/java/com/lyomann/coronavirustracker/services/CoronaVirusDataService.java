@@ -2,6 +2,7 @@ package com.lyomann.coronavirustracker.services;
 
 import org.springframework.stereotype.Service;
 
+
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
@@ -20,6 +21,13 @@ public class CoronaVirusDataService {
         HttpRequest request  = HttpRequest.newBuilder().uri(URI.create(VIRUS_DATA_URL)).build();
         HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
         System.out.println(httpResponse.body());
+        Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
+        for (CSVRecord record : records) {
+            String id = record.get("ID");
+            String customerNo = record.get("CustomerNo");
+            String name = record.get("Name");
+
+        }
 
     }
 }
