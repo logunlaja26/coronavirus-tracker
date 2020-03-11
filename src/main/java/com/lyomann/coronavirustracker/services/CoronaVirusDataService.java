@@ -4,44 +4,54 @@ import com.lyomann.coronavirustracker.models.LocationStats;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 public class CoronaVirusDataService {
 
-    private static String VIRUS_DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv";
+    private static final String VIRUS_DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv";
+    private static final Logger log = LoggerFactory.getLogger(CoronaVirusDataService.class);
 
     private List<LocationStats> allStats = new ArrayList<>();
+
     @PostConstruct
     @Scheduled(cron = "* * 1 * * *")
-    public void fetchVirusData() throws IOException, InterruptedException {
+    public void fetchVirusData() throws IOException {
         List<LocationStats> newStats = new ArrayList<>();
-        CSVParser parser = CSVParser.parse(new URL(VIRUS_DATA_URL), Charset.defaultCharset(), CSVFormat.DEFAULT);
+        CSVFormat format = CSVFormat.DEFAULT.withDelimiter(',').withFirstRecordAsHeader();
+        CSVParser parser = CSVParser.parse(new URL(VIRUS_DATA_URL), Charset.defaultCharset(), format);
         List<CSVRecord> records = parser.getRecords();
 
         for (CSVRecord record : records) {
-            System.out.println(record.get(0));
-            LocationStats locationStats = new LocationStats();
-            locationStats.setState(record.get(0));
-            locationStats.setCountry(record.get(1));
-            //DateFormat df = new SimpleDateFormat("mm/dd/yyyy", Locale.ENGLISH);
-            locationStats.setLatestTotalCases(Integer.parseInt(record.get(record.size() - 1)));
-            System.out.println(locationStats);
+            int lastIndex = record.size() - 1;
+            // This protects against records ending with just a ,
+            if (record.get(lastIndex).isEmpty()) lastIndex--;
+
+            LocationStats locationStats = new LocationStats(
+                    record.get(0),
+                    record.get(1),
+                    Integer.parseInt(record.get(lastIndex))
+            );
+            log.info("Country: " + locationStats.getCountry() +
+                    ", State: " + locationStats.getState() +
+                    ", Latest Total Cases: " + locationStats.getLatestTotalCases());
             newStats.add(locationStats);
         }
+
         this.allStats = newStats;
     }
 
+    public List<LocationStats> getAllStats() {
+        return allStats;
+    }
 }
