@@ -15,23 +15,21 @@
     <h1 class="display-4" th:text="${totalReportedCases}"></h1>
     <p class="lead">Total cases reported as of today</p>
 </div>
+<div class="container">
+    <table>
 
-
-
-<table>
-
-    <tr>
-        <th>State</th>
-        <th>Country</th>
-        <th>Total cases reported</th>
-    </tr>
-    <tr th:each="locationStat: ${locationStats}">
-        <td th:text="${locationStat.state}"></td>
-        <td th:text="${locationStat.country}"></td>
-        <td th:text="${locationStat.latestTotalCases}"></td>
-    </tr>
-</table>
-
+        <tr>
+            <th>State</th>
+            <th>Country</th>
+            <th>Total cases reported</th>
+        </tr>
+        <tr th:each="locationStat: ${locationStats}">
+            <td th:text="${locationStat.state}"></td>
+            <td th:text="${locationStat.country}"></td>
+            <td th:text="${locationStat.latestTotalCases}"></td>
+        </tr>
+    </table>
+</div>
 
 </body>
 </html>
