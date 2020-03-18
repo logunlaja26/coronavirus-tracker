@@ -40,14 +40,16 @@ public class CoronaVirusDataService {
             int lastIndex = record.size() - 1;
             int secondToLastIndex = lastIndex - 1;
             // This protects against records ending with just a ,
-            if (record.get(lastIndex).isEmpty()) lastIndex--;
-
+            if (record.get(lastIndex).isEmpty()){
+                lastIndex--;
+                secondToLastIndex--;
+            }
 
             LocationStats locationStats = new LocationStats(
                     record.get(0),
                     record.get(1),
                     Integer.parseInt(record.get(lastIndex)),
-                    Integer.parseInt(record.get(lastIndex - secondToLastIndex))
+                    Integer.parseInt(record.get(lastIndex)) - Integer.parseInt(record.get(secondToLastIndex))
             );
             log.info("Country: " + locationStats.getCountry() +
                     ", State: " + locationStats.getState() +

@@ -23,13 +23,6 @@ public class LocationStats {
     }
 
 
-
-//    public LocationStats(String state, String country, int latestTotalCases, ) {
-//        this.state = state;
-//        this.country = country;
-//        this.latestTotalCases = latestTotalCases;
-//    }
-
     public String getState() {
         return state;
     }
@@ -64,12 +57,4 @@ public class LocationStats {
                 '}';
     }
 
-    //    @Override
-//    public String toString() {
-//        return "LocationStats{" +
-//                "state='" + state + '\'' +
-//                ", country='" + country + '\'' +
-//                ", latestTotalCases=" + latestTotalCases +
-//                '}';
-//    }
 }
