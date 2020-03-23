@@ -1,0 +1,5 @@
+---
+applications:
+  - name: coronavirus-tracker-test
+    env:
+      JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 12.+ }}'
